@@ -8,12 +8,12 @@ import upload from "../../lib/uplaodsFile"
 
 
 const Login = () => {
-    const [avatar,setAvatar] = useState({
+    const [Avatar,setAvatar] = useState({
         file:null,
         url:""
     })
     const [loading,setLoading] = useState(false);
-    const handleAvatar = e =>{
+    const handleAvatar = (e) =>{
         if (e.target.files[0]) {
             setAvatar({
                 file:e.target.files[0],
@@ -22,7 +22,7 @@ const Login = () => {
         }
     };
 
-    const handleRegister = async  (e) => {
+    const handleRegister = async (e) => {
         e.preventDefault();
         setLoading(true)
         const formData = new FormData(e.target);
@@ -32,12 +32,12 @@ const Login = () => {
         try {
             const res = await createUserWithEmailAndPassword(auth,email,Password)
 
-            const imgUrl = await upload(avatar.file)
+            const imgUrl = await upload(Avatar.file)
 
             await setDoc(doc(db, "users", res.user.uid), {
                 username,
                 email,
-                avatar:imgUrl,
+                Avatar:imgUrl,
                 id: res.user.uid,
                 blocked: [],
               });
@@ -64,7 +64,7 @@ const Login = () => {
         const  { email, Password } = Object.fromEntries(formData);
 
         try {
-            await signInWithEmailAndPassword(auth , email , Password)
+           await signInWithEmailAndPassword(auth, email,Password)
         } catch (err) {
             console.log(err);
             toast.error(err.message)
@@ -81,7 +81,7 @@ const Login = () => {
         <div className="item">
             <h2>Welcome Back,</h2>
             <form onSubmit={handleLogin}>
-                <input type="text" name="Email" placeholder="Email" />
+                <input type="email" name="Email" placeholder="Email" />
                 <input type="password" name="Password" placeholder="Password" />
                 <button disabled={loading}>{loading ? "loading " : "Sign in"}</button>
             </form>
@@ -91,13 +91,13 @@ const Login = () => {
             <h2>Create An Account</h2>
         <form onSubmit={handleRegister}>
                 <label htmlFor="file">
-                    <img src={avatar.url || "/avatar.png"} alt="" />Upload an image
+                    <img src={Avatar.url || "/avatar.png"} alt="" />Upload an image
                 </label>
                 <input type="file" id="file" style={{display:'none'}} onChange={handleAvatar}/>
                 <input type="text" placeholder="Username" name="username" />
-                <input type="text" name="email" placeholder="Email" />
+                <input type="email" name="email" placeholder="Email" />
                 <input type="password" name="Password" placeholder="Password" />
-                <button disabled={loading} >{loading ? "loading " : "Sign up"}</button>
+                <button disabled={loading} > {loading ? "loading " : "Sign up"} </button>
             </form>
         </div>
     </div>

@@ -9,17 +9,18 @@ import { auth } from "./lib/firebase";
 import { useUserStore } from "./lib/userStore";
 
 const App = () => {
-   const {theCurrentUser , getUserInfo , loading}= useUserStore();
+   const {theCurrentUser , loading , getUserInfo}= useUserStore();
 
   useEffect(()=>{
     const unsub = onAuthStateChanged(auth , (user)=>{
       getUserInfo(user?.uid)
     })
-
+    
     return()=>{
       unsub();
     }
-  },[])
+  },[getUserInfo])
+  console.log(theCurrentUser)
 
     if (loading) return <div className="loading">Loading...</div>
   return (
@@ -30,12 +31,8 @@ const App = () => {
           <>
           <List/>
           <Chat/>
-          {use ? (<>
-          
             <Detail/>
-          </>): ((use) => !use)}
-          </>
-
+            </>
         ) : (<Login/>)
       }
       <Notifications/>
